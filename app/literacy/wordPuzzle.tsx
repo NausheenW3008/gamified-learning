@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Animated } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function WordPuzzle() {
@@ -20,14 +20,24 @@ export default function WordPuzzle() {
   const [answer, setAnswer] = useState("");
   const [message, setMessage] = useState("");
 
-  // Shuffle letters on puzzle load
+  const scaleAnim = new Animated.Value(1);
+
+  // Animate button press
+  const animatePress = () => {
+    Animated.sequence([
+      Animated.timing(scaleAnim, { toValue: 0.85, duration: 120, useNativeDriver: true }),
+      Animated.spring(scaleAnim, { toValue: 1, useNativeDriver: true }),
+    ]).start();
+  };
+
+  // Shuffle letters
   useEffect(() => {
-    const letters = puzzle.word.split(""); // Always valid string[]
+    const letters = puzzle.word.split("");
     const shuffledLetters = [...letters].sort(() => Math.random() - 0.5);
     setShuffled(shuffledLetters);
   }, [puzzle]);
 
-  // ⭐ Add literacy star
+  // Add stars
   const addLiteracyStar = async () => {
     const current = await AsyncStorage.getItem("literacyStars");
     const newVal = current ? parseInt(current) + 1 : 1;
@@ -35,6 +45,7 @@ export default function WordPuzzle() {
   };
 
   const pressLetter = (letter: string) => {
+    animatePress();
     setAnswer((prev) => prev + letter);
   };
 
@@ -58,25 +69,24 @@ export default function WordPuzzle() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Word Puzzle</Text>
+      <Text style={styles.header}>🧩 Word Puzzle</Text>
       <Text style={styles.subtitle}>Arrange the letters to form a word</Text>
 
+      {/* ANSWER BOX */}
       <View style={styles.answerBox}>
         <Text style={styles.answerText}>{answer}</Text>
       </View>
 
-      <View style={styles.lettersContainer}>
+      {/* LETTER BUTTONS */}
+      <Animated.View style={[styles.lettersContainer, { transform: [{ scale: scaleAnim }] }]}>
         {shuffled.map((letter, idx) => (
-          <TouchableOpacity
-            key={idx}
-            style={styles.letterBtn}
-            onPress={() => pressLetter(letter)}
-          >
+          <TouchableOpacity key={idx} style={styles.letterBtn} onPress={() => pressLetter(letter)}>
             <Text style={styles.letter}>{letter}</Text>
           </TouchableOpacity>
         ))}
-      </View>
+      </Animated.View>
 
+      {/* BUTTONS */}
       <TouchableOpacity style={styles.checkBtn} onPress={checkAnswer}>
         <Text style={styles.checkText}>Check</Text>
       </TouchableOpacity>
@@ -85,40 +95,46 @@ export default function WordPuzzle() {
         <Text style={styles.clearText}>Clear</Text>
       </TouchableOpacity>
 
-      {message !== "" && (
-        <Text style={styles.message}>{message}</Text>
-      )}
+      {message !== "" && <Text style={styles.message}>{message}</Text>}
     </View>
   );
 }
 
+// ----------------- STYLES -----------------
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 60,
+    paddingTop: 70,
     alignItems: "center",
+    backgroundColor: "#FDF8E4",
   },
-  title: {
-    fontSize: 30,
-    fontWeight: "bold",
+  header: {
+    fontSize: 32,
+    fontWeight: "900",
     marginBottom: 10,
+    color: "#FF6B6B",
   },
   subtitle: {
     fontSize: 17,
-    marginBottom: 25,
+    marginBottom: 20,
+    color: "#555",
   },
   answerBox: {
     width: "80%",
-    height: 50,
-    borderWidth: 2,
-    borderRadius: 10,
+    height: 60,
+    backgroundColor: "#fff",
+    borderRadius: 14,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 25,
+    elevation: 4,
+    marginBottom: 30,
+    borderWidth: 2,
+    borderColor: "#FFD93D",
   },
   answerText: {
-    fontSize: 22,
-    fontWeight: "600",
+    fontSize: 26,
+    fontWeight: "700",
+    color: "#333",
   },
   lettersContainer: {
     flexDirection: "row",
@@ -126,41 +142,44 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   letterBtn: {
-    backgroundColor: "#eee",
-    padding: 17,
-    borderRadius: 10,
+    backgroundColor: "#FFDAC1",
+    paddingVertical: 18,
+    paddingHorizontal: 22,
+    borderRadius: 12,
+    elevation: 3,
   },
   letter: {
-    fontSize: 23,
-    fontWeight: "bold",
+    fontSize: 28,
+    fontWeight: "900",
+    color: "#333",
   },
   checkBtn: {
-    backgroundColor: "#4CAF50",
-    padding: 12,
-    borderRadius: 8,
-    width: "50%",
+    backgroundColor: "#4ECDC4",
+    padding: 14,
+    borderRadius: 12,
+    width: "55%",
     alignItems: "center",
     marginBottom: 10,
   },
   checkText: {
     color: "white",
-    fontSize: 18,
-    fontWeight: "600",
+    fontSize: 20,
+    fontWeight: "700",
   },
   clearBtn: {
-    backgroundColor: "#777",
-    padding: 10,
-    borderRadius: 8,
-    width: "50%",
+    backgroundColor: "#888",
+    padding: 12,
+    borderRadius: 12,
+    width: "55%",
     alignItems: "center",
   },
   clearText: {
     color: "white",
-    fontSize: 17,
+    fontSize: 18,
   },
   message: {
-    fontSize: 26,
-    marginTop: 20,
+    fontSize: 28,
     fontWeight: "bold",
+    marginTop: 20,
   },
 });

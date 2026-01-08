@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { useEffect, useState, useRef } from "react";
+import { View, Text, StyleSheet, Animated, ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RewardsScreen() {
   const [literacyStars, setLiteracyStars] = useState(0);
   const [numeracyStars, setNumeracyStars] = useState(0);
+
+  // Animations
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.8)).current;
 
   useEffect(() => {
     const loadStars = async () => {
@@ -15,96 +19,179 @@ export default function RewardsScreen() {
       if (n !== null) setNumeracyStars(parseInt(n));
     };
     loadStars();
+
+    // Fade-in + scale bounce animation
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 5,
+        useNativeDriver: true,
+      }),
+    ]).start();
   }, []);
 
   const total = literacyStars + numeracyStars;
 
   const getBadge = () => {
-    if (total >= 100) return "🏆 Genius Trophy";
-    if (total >= 60) return "🥇 Top Learner";
-    if (total >= 30) return "🎖️ Rising Star";
-    if (total >= 15) return "🌟 Beginner Star";
+    if (total >= 200) return "🏆 Genius Trophy";
+    if (total >= 100) return "🥇 Top Learner";
+    if (total >= 60) return "🎖️ Rising Star";
+    if (total >= 30) return "🌟 Beginner Star";
     return "✨ Keep Playing!";
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Your Rewards</Text>
+    <View style={styles.mainContainer}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Animated.View
+          style={[
+            styles.container,
+            { opacity: fadeAnim, transform: [{ scale: scaleAnim }] },
+          ]}
+        >
+          <Text style={styles.header}>🏅 Rewards & Achievements</Text>
 
-      <Text style={styles.starCount}>⭐ Total Stars: {total}</Text>
+          {/* Total Stars Card */}
+          <View style={styles.card}>
+            <Text style={styles.bigStar}>⭐</Text>
+            <Text style={styles.totalStars}>{total} Stars</Text>
+          </View>
 
-      <Text style={styles.subStars}>📘 Literacy Stars: {literacyStars}</Text>
-      <Text style={styles.subStars}>🔢 Numeracy Stars: {numeracyStars}</Text>
+          {/* Sub Stars */}
+          <View style={styles.subCard}>
+            <Text style={styles.subText}>📘 Literacy Stars: {literacyStars}</Text>
+            <Text style={styles.subText}>🔢 Numeracy Stars: {numeracyStars}</Text>
+          </View>
 
-      <View style={styles.badgeBox}>
-        <Text style={styles.badgeTitle}>Unlocked Badge:</Text>
-        <Text style={styles.badge}>{getBadge()}</Text>
-      </View>
+          {/* Badge Box */}
+          <View style={styles.badgeBox}>
+            <Text style={styles.badgeTitle}>Your Badge</Text>
+            <Text style={styles.badge}>{getBadge()}</Text>
+          </View>
 
-      <View style={styles.progressBox}>
-        <Text style={styles.progressText}>
-          Next badge at:{" "}
-          {total < 5
-            ? "⭐ 5"
-            : total < 10
-            ? "⭐ 10"
-            : total < 20
-            ? "⭐ 20"
-            : "⭐ 30"}
-        </Text>
-      </View>
+          {/* Progress Box */}
+          <View style={styles.progressCard}>
+            <Text style={styles.progressTitle}>Next Badge At</Text>
+            <Text style={styles.progressValue}>
+              {total < 30
+                ? "⭐ 30"
+                : total < 60
+                ? "⭐ 60"
+                : total < 100
+                ? "⭐ 100"
+                : "⭐ 200"}
+            </Text>
+          </View>
+        </Animated.View>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
-    paddingTop: 80,
+    backgroundColor: "#FDF8E4",
+  },
+
+  scrollContent: {
+    paddingBottom: 50,
     alignItems: "center",
-    backgroundColor: "#fff",
   },
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 30,
+
+  container: {
+    paddingTop: 60,
+    alignItems: "center",
+    width: "100%",
   },
-  starCount: {
+
+  header: {
     fontSize: 30,
     fontWeight: "900",
-    marginBottom: 15,
+    marginBottom: 25,
+    color: "#FF6B6B",
   },
-  subStars: {
-    fontSize: 20,
-    marginBottom: 5,
-  },
-  badgeBox: {
-    backgroundColor: "#f3f3f3",
-    padding: 20,
-    borderRadius: 12,
+
+  card: {
     width: "80%",
+    backgroundColor: "#FFE0B5",
+    padding: 25,
+    borderRadius: 20,
     alignItems: "center",
-    marginTop: 25,
+    marginBottom: 25,
+    elevation: 4,
   },
-  badgeTitle: {
+
+  bigStar: {
+    fontSize: 50,
+  },
+
+  totalStars: {
+    marginTop: 8,
+    fontSize: 32,
+    fontWeight: "900",
+  },
+
+  subCard: {
+    width: "80%",
+    backgroundColor: "#FFF4D9",
+    padding: 18,
+    borderRadius: 16,
+    alignItems: "center",
+    marginBottom: 25,
+    elevation: 3,
+  },
+
+  subText: {
     fontSize: 20,
     fontWeight: "600",
-    marginBottom: 10,
   },
+
+  badgeBox: {
+    width: "80%",
+    backgroundColor: "#FFD6E8",
+    padding: 20,
+    borderRadius: 20,
+    alignItems: "center",
+    marginBottom: 25,
+    elevation: 4,
+  },
+
+  badgeTitle: {
+    fontSize: 22,
+    fontWeight: "700",
+    marginBottom: 6,
+  },
+
   badge: {
     fontSize: 28,
-    fontWeight: "700",
+    fontWeight: "800",
   },
-  progressBox: {
-    backgroundColor: "#e8e8e8",
-    padding: 15,
-    borderRadius: 10,
-    width: "70%",
+
+  progressCard: {
+    width: "75%",
+    backgroundColor: "#D8EFFF",
+    padding: 20,
+    borderRadius: 15,
     alignItems: "center",
-    marginTop: 30,
+    elevation: 3,
+    marginBottom: 30,
   },
-  progressText: {
+
+  progressTitle: {
     fontSize: 18,
-    fontWeight: "500",
+    fontWeight: "700",
+    marginBottom: 5,
+  },
+
+  progressValue: {
+    fontSize: 24,
+    fontWeight: "900",
+    color: "#4A90E2",
   },
 });

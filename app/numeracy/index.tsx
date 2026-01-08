@@ -1,56 +1,133 @@
 // app/numeracy/index.tsx
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
+
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Easing } from "react-native";
+import { useEffect, useRef } from "react";
+import { router } from "expo-router";
 
 export default function NumeracyIndex() {
-  const router = useRouter();
+  const fadeAnim = useRef(new Animated.Value(0)).current;         // screen fade
+  const slide1 = useRef(new Animated.Value(300)).current;         // card 1 slide-in
+  const slide2 = useRef(new Animated.Value(300)).current;         // card 2 slide-in
+  const scaleAnim = useRef(new Animated.Value(1)).current;        // emoji scale
+
+  useEffect(() => {
+    // Fade-in screen
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 600,
+      useNativeDriver: true,
+    }).start();
+
+    // Slide-in cards with stagger
+    Animated.stagger(200, [
+      Animated.spring(slide1, { toValue: 0, useNativeDriver: true }),
+      Animated.spring(slide2, { toValue: 0, useNativeDriver: true }),
+    ]).start();
+  }, []);
+
+  const bounce = () => {
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 1.15,
+        duration: 120,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 120,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Numeracy Games</Text>
+    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+      <Text style={styles.header}>✨ Numeracy Games ✨</Text>
 
-      {/* Match Numbers Game */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push("/numeracy/matchNumbers")}
-      >
-        <Text style={styles.buttonText}>Match Number to Objects</Text>
-      </TouchableOpacity>
+      {/* Match Numbers */}
+      <Animated.View style={{ transform: [{ translateX: slide1 }] }}>
+        <TouchableOpacity
+          style={[styles.card, { borderLeftColor: "#4A90E2" }]}
+          onPress={() => {
+            bounce();
+            router.push("/numeracy/matchNumbers");
+          }}
+        >
+          <Animated.Text style={[styles.emoji, { transform: [{ scale: scaleAnim }] }]}>
+            🔢
+          </Animated.Text>
 
-      {/* Number Order Game */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push("/numeracy/orderGame")}
-      >
-        <Text style={styles.buttonText}>Number Ordering (Swap)</Text>
-      </TouchableOpacity>
-    </View>
+          <View>
+            <Text style={styles.cardTitle}>Match Number to Objects</Text>
+            <Text style={styles.cardDesc}>
+              Count objects & pick the correct number
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </Animated.View>
+
+      {/* Number Ordering */}
+      <Animated.View style={{ transform: [{ translateX: slide2 }] }}>
+        <TouchableOpacity
+          style={[styles.card, { borderLeftColor: "#F7B731" }]}
+          onPress={() => {
+            bounce();
+            router.push("/numeracy/addGame");
+          }}
+        >
+          <Animated.Text style={[styles.emoji, { transform: [{ scale: scaleAnim }] }]}>
+            ➕
+          </Animated.Text>
+
+          <View>
+            <Text style={styles.cardTitle}> Add Game</Text>
+            <Text style={styles.cardDesc}>
+              Count and add numbers
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </Animated.View>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 80,
-    alignItems: "center",
+    backgroundColor: "#FDF8E4",
+    padding: 20,
+  },
+  header: {
+    fontSize: 32,
+    fontWeight: "900",
+    textAlign: "center",
+    marginVertical: 30,
+    color: "#4A90E2",
+  },
+  card: {
     backgroundColor: "#fff",
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: "bold",
-    marginBottom: 30,
-  },
-  button: {
-    width: "80%",
-    backgroundColor: "#4A90E2",
-    paddingVertical: 15,
-    borderRadius: 12,
+    padding: 20,
+    borderRadius: 16,
     marginBottom: 18,
+    elevation: 4,
+    borderLeftWidth: 12,
+    flexDirection: "row",
     alignItems: "center",
+    gap: 15,
   },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "700",
+  emoji: {
+    fontSize: 40,
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#333",
+  },
+  cardDesc: {
+    fontSize: 14,
+    marginTop: 2,
+    color: "#666",
   },
 });
