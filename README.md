@@ -1,50 +1,107 @@
-# Welcome to your Expo app 👋
+# 🎮 Gamified Learning App for Kids
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A child-friendly gamified learning application designed to improve **literacy and numeracy skills** through interactive games, animations, and a reward-based system.
 
-## Get started
+---
 
-1. Install dependencies
+## 📌 Project Overview
+The Gamified Learning App helps young learners understand basic concepts of letters and numbers using fun activities.  
+Parents can track the child’s progress through a dedicated dashboard.
 
-   ```bash
-   npm install
-   ```
+---
 
-2. Start the app
+## ✨ Key Features
+- 📘 Literacy games (Alphabet Flashcards, Word Puzzle)
+- 🔢 Numeracy games (Number Matching, Addition-based tasks)
+- ⭐ Star-based reward system
+- 🏆 Badge unlocking based on performance
+- 📊 Parent Dashboard for monitoring progress
+- 🎨 Child-friendly UI with animations
+- 💾 Offline data storage using AsyncStorage
+- 🌐 Supports Web & Mobile using Expo
 
-   ```bash
-   npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+## 🛠️ Technologies Used
+- React Native (UI development)
+- Expo (cross-platform deployment)
+- Expo Router (file-based navigation)
+- JavaScript / TypeScript
+- AsyncStorage (local data persistence)
+- Git & GitHub (version control)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+## 🚀 How to Run the Project
+1. Clone the repository
 ```bash
-npm run reset-project
-```
+git clone https://github.com/your-username/gamified-learning.git
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-## Learn more
+2. Navigate to the project folder
+```bash
+cd gamified-learning
 
-To learn more about developing your project with Expo, look at the following resources:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+3. Install dependencies
+```bash
+npm install
 
-## Join the community
 
-Join our community of developers creating universal apps.
+4. Start the app
+```bash
+npx expo start
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+5. Run on:
+
+📱 Android device using Expo Go (QR scan)
+
+🌐 Web browser
+
+---
+
+## 📸 Screenshots
+
+Note: Screenshots are taken from the web version.
+The same application runs on Android devices using Expo Go with similar UI and functionality.
+
+
+### 🏠 Home Screen
+![Home Screen](screenshots/home/home.png)
+
+---
+
+### 📘 Literacy Module
+
+**Literacy Games Menu**
+![Literacy Menu](screenshots/literacy/literacy-menu.png)
+
+**Alphabet Flashcards Game**
+![Flashcards](screenshots/literacy/flashcards.png)
+
+**Word Puzzle Game**
+![Word Puzzle](screenshots/literacy/word-puzzle.png)
+
+---
+
+### 🔢 Numeracy Module
+
+**Numeracy Games Menu**
+![Numeracy Menu](screenshots/numeracy/numeracy-menu.png)
+
+**Match Numbers Game**
+![Match Numbers](screenshots/numeracy/match-numbers.png)
+
+**Addition Game**
+![Addition Game](screenshots/numeracy/addition-game.png)
+
+---
+
+### ⭐ Rewards Screen
+![Rewards](screenshots/rewards/rewards.png)
+
+---
+
+### 👨‍👩‍👧 Parent Dashboard
+![Parent Dashboard](screenshots/dashboard/parent-dashboard.png)
