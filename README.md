@@ -33,23 +33,24 @@ Parents can track the child’s progress through a dedicated dashboard.
 ---
 
 ## 🚀 How to Run the Project
-1. Clone the repository
 ```bash
+1. Clone the repository
+
 git clone https://github.com/your-username/gamified-learning.git
 
 
 2. Navigate to the project folder
-```bash
+
 cd gamified-learning
 
 
 3. Install dependencies
-```bash
+
 npm install
 
 
 4. Start the app
-```bash
+
 npx expo start
 
 
@@ -58,6 +59,7 @@ npx expo start
 📱 Android device using Expo Go (QR scan)
 
 🌐 Web browser
+```
 
 ---
 
